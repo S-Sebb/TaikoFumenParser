@@ -73,11 +73,6 @@ def parse_fumen(fumen_info_dict):
                         balloon_hit_count = hex2int(hex_data[start_pos + 16 * 2: start_pos + 20 * 2])
                     else:
                         balloon_hit_count = hex2int(hex_data[start_pos + 20 * 2: start_pos + 24 * 2])
-                    if note_type == 10:
-                        print("a")
-                    else:
-                        print("b")
-                    print(balloon_hit_count)
                     if balloon_hit_count < 300:
                         total_balloon_hit_count += balloon_hit_count
                     elif balloon_hit_count < 1000:
