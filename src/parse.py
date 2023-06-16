@@ -47,6 +47,8 @@ def parse_fumen(fumen_info_dict):
     for fumen_filename, fumen_filepath, course in zip(fumen_filenames, fumen_filepaths, courses):
         hex_data = open_as_hex(fumen_filepath)
 
+        has_renda = False
+
         start_pos = 568 * 2  # 568 = 0x238 start of fumen data
         note_data_length = 24 * 2
         note_type_length = 4 * 2
@@ -76,6 +78,7 @@ def parse_fumen(fumen_info_dict):
                         is_renda = True
                 elif note_type == 6 or note_type == 9:
                     is_renda = True
+                    has_renda = True
                 if is_renda:
                     renda_duration = hex2float(hex_data[start_pos + 20 * 2:start_pos + 24 * 2])
                     total_renda_duration += renda_duration
@@ -100,6 +103,8 @@ def parse_fumen(fumen_info_dict):
                                      total_renda_duration * renda_per_sec * 100) / note_sum) / 10) * 10
             score_kiwami = round((total_renda_duration * renda_per_sec * 100 +
                                   note_sum * score_init + total_balloon_hit_count * 100) / 10) * 10
+            if has_renda:
+                total_balloon_hit_count = 1000
             if course == "Edit":
                 filled_fumen_info_dict["shinutiUra"] = score_init
                 filled_fumen_info_dict["shinutiUraDuet"] = score_init
