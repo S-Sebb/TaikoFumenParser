@@ -38,10 +38,21 @@ def parse_fumen(fumen_info_dict):
         "hardOnpuNum": 0,
         "maniaOnpuNum": 0,
         "uraOnpuNum": 0,
+        "rendaTimeEasy": 0,
+        "rendaTimeNormal": 0,
+        "rendaTimeHard": 0,
+        "rendaTimeMania": 0,
+        "rendaTimeUra": 0,
+        "fuusenTotalEasy": 0,
         "fuusenTotalNormal": 0,
         "fuusenTotalHard": 0,
         "fuusenTotalMania": 0,
-        "fuusenTotalUra": 0
+        "fuusenTotalUra": 0,
+        "spikeOnEasy": False,
+        "spikeOnNormal": False,
+        "spikeOnHard": False,
+        "spikeOnOni": False,
+        "spikeOnUra": False
     }
 
     for fumen_filename, fumen_filepath, course in zip(fumen_filenames, fumen_filepaths, courses):
@@ -78,7 +89,6 @@ def parse_fumen(fumen_info_dict):
                         is_renda = True
                 elif note_type == 6 or note_type == 9:
                     is_renda = True
-                    has_renda = True
                 if is_renda:
                     renda_duration = hex2float(hex_data[start_pos + 20 * 2:start_pos + 24 * 2])
                     total_renda_duration += renda_duration
@@ -103,8 +113,6 @@ def parse_fumen(fumen_info_dict):
                                      total_renda_duration * renda_per_sec * 100) / note_sum) / 10) * 10
             score_kiwami = round((total_renda_duration * renda_per_sec * 100 +
                                   note_sum * score_init + total_balloon_hit_count * 100) / 10) * 10
-            if has_renda:
-                total_balloon_hit_count = 1000
             if course == "Edit":
                 filled_fumen_info_dict["shinutiUra"] = score_init
                 filled_fumen_info_dict["shinutiUraDuet"] = score_init
@@ -112,6 +120,7 @@ def parse_fumen(fumen_info_dict):
                 filled_fumen_info_dict["shinutiScoreUraDuet"] = score_kiwami
                 filled_fumen_info_dict["uraOnpuNum"] = note_sum
                 filled_fumen_info_dict["fuusenTotalUra"] = total_balloon_hit_count
+                filled_fumen_info_dict["rendaTimeUra"] = total_renda_duration
             elif course == "Oni":
                 filled_fumen_info_dict["shinutiMania"] = score_init
                 filled_fumen_info_dict["shinutiManiaDuet"] = score_init
@@ -119,6 +128,7 @@ def parse_fumen(fumen_info_dict):
                 filled_fumen_info_dict["shinutiScoreManiaDuet"] = score_kiwami
                 filled_fumen_info_dict["maniaOnpuNum"] = note_sum
                 filled_fumen_info_dict["fuusenTotalMania"] = total_balloon_hit_count
+                filled_fumen_info_dict["rendaTimeMania"] = total_renda_duration
             elif course == "Hard":
                 filled_fumen_info_dict["shinutiHard"] = score_init
                 filled_fumen_info_dict["shinutiHardDuet"] = score_init
@@ -126,6 +136,7 @@ def parse_fumen(fumen_info_dict):
                 filled_fumen_info_dict["shinutiScoreHardDuet"] = score_kiwami
                 filled_fumen_info_dict["fuusenTotalHard"] = total_balloon_hit_count
                 filled_fumen_info_dict["hardOnpuNum"] = note_sum
+                filled_fumen_info_dict["rendaTimeHard"] = total_renda_duration
             elif course == "Normal":
                 filled_fumen_info_dict["shinutiNormal"] = score_init
                 filled_fumen_info_dict["shinutiNormalDuet"] = score_init
@@ -133,12 +144,15 @@ def parse_fumen(fumen_info_dict):
                 filled_fumen_info_dict["shinutiScoreNormalDuet"] = score_kiwami
                 filled_fumen_info_dict["fuusenTotalNormal"] = total_balloon_hit_count
                 filled_fumen_info_dict["normalOnpuNum"] = note_sum
+                filled_fumen_info_dict["rendaTimeNormal"] = total_renda_duration
             elif course == "Easy":
+                filled_fumen_info_dict["fuusenTotalEasy"] = total_balloon_hit_count
                 filled_fumen_info_dict["shinutiEasy"] = score_init
                 filled_fumen_info_dict["shinutiEasyDuet"] = score_init
                 filled_fumen_info_dict["shinutiScoreEasy"] = score_kiwami
                 filled_fumen_info_dict["shinutiScoreEasyDuet"] = score_kiwami
                 filled_fumen_info_dict["easyOnpuNum"] = note_sum
+                filled_fumen_info_dict["rendaTimeEasy"] = total_renda_duration
         except Exception as e:
             print("\n")
             print("Branching or misaligned data detected in fumen file: %s" % fumen_filepath)
